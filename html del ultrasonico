@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #020617;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: white;
+    }
+
+    .card {
+      background: #020617;
+      padding: 26px 24px;
+      border-radius: 22px;
+      width: 260px;
+      text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.08),
+        0 25px 60px rgba(0,0,0,.6);
+    }
+
+    .title {
+      font-size: 15px;
+      letter-spacing: .5px;
+      color: #7dd3fc;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    .value {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      transition: color .3s, text-shadow .3s;
+    }
+
+    .unit {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    /* ===== COLORES ===== */
+    .green {
+      color: #22c55e;
+      text-shadow: 0 0 12px rgba(34,197,94,.6);
+    }
+
+    .orange {
+      color: #f59e0b;
+      text-shadow: 0 0 12px rgba(245,158,11,.6);
+    }
+
+    .red {
+      color: #ef4444;
+      text-shadow: 0 0 12px rgba(239,68,68,.7);
+    }
+
+    .bar {
+      margin-top: 22px;
+      height: 10px;
+      background: #020617;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: inset 0 0 0 1px rgba(148,163,184,.2);
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      transition: width .3s, background .3s, box-shadow .3s;
+    }
+
+    .bar.green span {
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      box-shadow: 0 0 12px rgba(34,197,94,.8);
+    }
+
+    .bar.orange span {
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      box-shadow: 0 0 12px rgba(245,158,11,.8);
+    }
+
+    .bar.red span {
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+      box-shadow: 0 0 14px rgba(239,68,68,.9);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="title">📏 Distancia Ultrasónica</div>
+    <div id="distance" class="value">{{ value | number:2 }}</div>
+    <div class="unit">cm</div>
+
+    <div id="bar" class="bar">
+      <span id="barFill"></span>
+    </div>
+  </div>
+
+  <script>
+    const MAX_DISTANCE = 100;
+
+    function updateUI() {
+      const valueEl = document.getElementById('distance');
+      const barEl = document.getElementById('bar');
+      const barFill = document.getElementById('barFill');
+
+      const value = parseFloat(valueEl.innerText) || 0;
+
+      // ---- PROGRESO (0–100 cm) ----
+      const percentage = Math.min((value / MAX_DISTANCE) * 100, 100);
+      barFill.style.width = percentage + '%';
+
+      // ---- COLORES ----
+      valueEl.classList.remove('green', 'orange', 'red');
+      barEl.classList.remove('green', 'orange', 'red');
+
+      if (value > 30) {
+        valueEl.classList.add('red');
+        barEl.classList.add('red');
+      } else if (value >= 20) {
+        valueEl.classList.add('orange');
+        barEl.classList.add('orange');
+      } else {
+        valueEl.classList.add('green');
+        barEl.classList.add('green');
+      }
+    }
+
+    // actualización continua para datos en tiempo real
+    setInterval(updateUI, 300);
+  </script>
+
+</body>
+</html>
