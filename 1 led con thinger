@@ -1,0 +1,39 @@
+from machine import Pin
+import time
+from thinger import ThingerClient
+from thinger import Credentials
+from thinger import WiFi
+
+# ========= THINGER.IO =========
+USERNAME = "Paul_Piedra"
+DEVICE_ID = "ed"
+DEVICE_CREDENTIAL = "123456"
+
+# ========= WIFI =========
+SSID = "MECATRONICA_3ABC"
+SSID_PASSWORD = "MEC2025@."  # Reemplaza por tu clave real
+
+# ========= LED =========
+led = Pin(2, Pin.OUT)  # GPIO2 (LED interno ESP32)
+led.off()
+
+# ========= THINGER =========
+credentials = Credentials(USERNAME, DEVICE_ID, DEVICE_CREDENTIAL)
+wifi = WiFi(SSID, SSID_PASSWORD)
+thing = ThingerClient(credentials, wifi)
+
+# Recurso LED (switch en Thinger.io)
+def led_resource(value):
+    if value:
+        led.on()
+    else:
+        led.off()
+
+thing.add_resource("led", led_resource)
+
+print("ESP32 iniciado. Conectando a Thinger.io...")
+
+# ========= LOOP =========
+while True:
+    thing.handle()
+    time.sleep_ms(100)
